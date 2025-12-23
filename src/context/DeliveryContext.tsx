@@ -61,7 +61,8 @@ export function DeliveryProvider({ children }: { children: React.ReactNode }) {
 
 
                 auth: { token },
-                transports: ['websocket'] // Force websocket
+                transports: ['websocket'], // Force websocket
+                withCredentials: true,
             });
 
             newSocket.on('connect', () => {

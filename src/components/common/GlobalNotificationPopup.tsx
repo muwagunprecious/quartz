@@ -19,7 +19,8 @@ export default function GlobalNotificationPopup() {
         if (!token) return;
 
         const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
-            auth: { token }
+            auth: { token },
+            withCredentials: true,
         });
 
         newSocket.on('admin_notification', (data: NotificationData) => {
