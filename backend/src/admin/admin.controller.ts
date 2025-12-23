@@ -7,6 +7,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { getUploadPath } from '../common/utils/upload-utils';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -32,7 +33,9 @@ export class AdminController {
     @ApiConsumes('multipart/form-data')
     @UseInterceptors(FileInterceptor('image', {
         storage: diskStorage({
-            destination: './uploads/banners',
+            destination: (req, file, cb) => {
+                cb(null, getUploadPath('banners'));
+            },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, `banner-${uniqueSuffix}${extname(file.originalname)}`);

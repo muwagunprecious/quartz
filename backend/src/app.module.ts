@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
@@ -20,8 +22,12 @@ import { ReviewsModule } from './reviews/reviews.module';
 @Module({
     imports: [
         ConfigModule.forRoot({ isGlobal: true }),
+        ThrottlerModule.forRoot([{
+            ttl: 60000,
+            limit: 100,
+        }]),
         ServeStaticModule.forRoot({
-            rootPath: join(process.cwd(), 'uploads'),
+            rootPath: process.env.UPLOAD_PATH || join(process.cwd(), 'uploads'),
             serveRoot: '/uploads',
         }),
         PrismaModule,
@@ -40,6 +46,11 @@ import { ReviewsModule } from './reviews/reviews.module';
         ReviewsModule,
     ],
     controllers: [],
-    providers: [],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
+    ],
 })
 export class AppModule { }

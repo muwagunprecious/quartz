@@ -5,6 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { getUploadPath } from '../common/utils/upload-utils';
 
 @ApiTags('uploads')
 @Controller('uploads')
@@ -27,7 +28,9 @@ export class UploadsController {
     @ApiBearerAuth()
     @UseInterceptors(FilesInterceptor('images', 10, {
         storage: diskStorage({
-            destination: './uploads/misc',
+            destination: (req, file, cb) => {
+                cb(null, getUploadPath('misc'));
+            },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, 'misc-' + uniqueSuffix + extname(file.originalname));
@@ -44,7 +47,9 @@ export class UploadsController {
     @ApiBearerAuth()
     @UseInterceptors(FilesInterceptor('images', 1, {
         storage: diskStorage({
-            destination: './uploads/profiles',
+            destination: (req, file, cb) => {
+                cb(null, getUploadPath('profiles'));
+            },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, 'profile-' + uniqueSuffix + extname(file.originalname));
@@ -61,7 +66,9 @@ export class UploadsController {
     @ApiBearerAuth()
     @UseInterceptors(FilesInterceptor('images', 1, {
         storage: diskStorage({
-            destination: './uploads/banners',
+            destination: (req, file, cb) => {
+                cb(null, getUploadPath('banners'));
+            },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, 'banner-' + uniqueSuffix + extname(file.originalname));
@@ -78,7 +85,9 @@ export class UploadsController {
     @ApiBearerAuth()
     @UseInterceptors(FilesInterceptor('images', 5, {
         storage: diskStorage({
-            destination: './uploads/products',
+            destination: (req, file, cb) => {
+                cb(null, getUploadPath('products'));
+            },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, 'product-' + uniqueSuffix + extname(file.originalname));
@@ -96,7 +105,9 @@ export class UploadsController {
     @ApiBearerAuth()
     @UseInterceptors(FilesInterceptor('images', 1, {
         storage: diskStorage({
-            destination: './uploads/documents',
+            destination: (req, file, cb) => {
+                cb(null, getUploadPath('documents'));
+            },
             filename: (req, file, cb) => {
                 const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
                 cb(null, 'doc-' + uniqueSuffix + extname(file.originalname));
