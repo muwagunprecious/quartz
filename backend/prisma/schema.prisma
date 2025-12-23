@@ -1,0 +1,274 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              String         @id @default(uuid())
+  name            String
+  email           String         @unique
+  password_hash   String
+  role            String         @default("STUDENT")
+  whatsapp_number String?
+  university_id   String?
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  is_active       Boolean        @default(true)
+  is_banned       Boolean        @default(false)
+  complaints      Complaint[]
+  notifications   Notification[]
+  orders_bought   Order[]        @relation("BuyerOrders")
+  reviews_given   Review[]       @relation("BuyerReviews")
+  rider_profile   RiderProfile?
+  seller_profile  SellerProfile?
+  university      University?    @relation(fields: [university_id], references: [id])
+
+  @@map("users")
+}
+
+model SellerProfile {
+  id               String    @id @default(uuid())
+  user_id          String    @unique
+  store_name       String?
+  description      String?
+  bio              String?
+  store_categories String?
+  logo_url         String?
+  banner_url       String?
+  rating           Float     @default(0)
+  wallet_balance   Float     @default(0)
+  created_at       DateTime  @default(now())
+  updated_at       DateTime  @updatedAt
+  orders_sold      Order[]   @relation("SellerOrders")
+  products         Product[]
+  reviews          Review[]  @relation("SellerReviews")
+  user             User      @relation(fields: [user_id], references: [id])
+
+  @@map("sellers")
+}
+
+model Review {
+  id         String        @id @default(uuid())
+  buyer_id   String
+  seller_id  String
+  rating     Int           @default(5)
+  comment    String?
+  created_at DateTime      @default(now())
+  updated_at DateTime      @updatedAt
+  buyer      User          @relation("BuyerReviews", fields: [buyer_id], references: [id])
+  seller     SellerProfile @relation("SellerReviews", fields: [seller_id], references: [id])
+
+  @@map("reviews")
+}
+
+model RiderProfile {
+  id                  String     @id @default(uuid())
+  user_id             String     @unique
+  university_id       String
+  nin_encrypted       String?
+  is_online           Boolean    @default(false)
+  verification_status String     @default("PENDING")
+
+  vehicle_info               String?
+  phone_verified             Boolean    @default(false)
+  verification_document_type String?    // e.g. "NIN", "STUDENT_ID"
+  verification_document_url  String?
+  created_at                 DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+  deliveries          Delivery[]
+  university          University @relation(fields: [university_id], references: [id])
+  user                User       @relation(fields: [user_id], references: [id])
+
+  @@map("riders")
+}
+
+model University {
+  id                  String              @id @default(uuid())
+  name                String
+  slug                String              @unique
+  city                String?
+  state_id            String?
+  created_at          DateTime            @default(now())
+  updated_at          DateTime            @updatedAt
+  deliveries          Delivery[]
+  products            Product[]
+  riders              RiderProfile[]
+  state               State?              @relation(fields: [state_id], references: [id])
+  users               User[]
+  admin_notifications AdminNotification[]
+
+  @@map("universities")
+}
+
+model AdminNotification {
+  id            String      @id @default(uuid())
+  message       String
+  university_id String?
+  target        String      @default("ALL") // "ALL" or "UNIVERSITY"
+  created_at    DateTime    @default(now())
+  university    University? @relation(fields: [university_id], references: [id])
+
+  @@map("admin_notifications")
+}
+
+model Category {
+  id         String    @id @default(uuid())
+  name       String
+  slug       String    @unique
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  products   Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id              String         @id @default(uuid())
+  seller_id       String
+  university_id   String
+  category_id     String
+  title           String
+  description     String
+  price           Float
+  condition       String?
+  stock_status    String         @default("IN_STOCK")
+  is_published    Boolean        @default(true)
+  whatsapp_number String?
+  created_at      DateTime       @default(now())
+  updated_at      DateTime       @updatedAt
+  specifications  String?
+  views           Int            @default(0)
+  clicks          Int            @default(0)
+  orders          Order[]
+  images          ProductImage[]
+  category        Category       @relation(fields: [category_id], references: [id])
+  university      University     @relation(fields: [university_id], references: [id])
+  seller          SellerProfile  @relation(fields: [seller_id], references: [id])
+
+  @@map("products")
+}
+
+model ProductImage {
+  id          String   @id @default(uuid())
+  product_id  String
+  url         String
+  order_index Int      @default(0)
+  created_at  DateTime @default(now())
+  product     Product  @relation(fields: [product_id], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model Order {
+  id                String        @id @default(uuid())
+  buyer_id          String
+  seller_id         String
+  product_id        String
+  quantity          Int           @default(1)
+  price_total       Float
+  delivery_option   String
+  delivery_fee      Float         @default(0)
+  status            String        @default("PENDING")
+  verification_code String?
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+  delivery          Delivery?
+  product           Product       @relation(fields: [product_id], references: [id])
+  seller            SellerProfile @relation("SellerOrders", fields: [seller_id], references: [id])
+  buyer             User          @relation("BuyerOrders", fields: [buyer_id], references: [id])
+
+  @@map("orders")
+}
+
+model Delivery {
+  id               String        @id @default(uuid())
+  order_id         String?       @unique
+  university_id    String
+  item_name        String?
+  rider_id         String?
+  initiated_by     String
+  pickup_address   String?
+  pickup_contact   String?
+  dropoff_address  String?
+  offered_price    Float
+  negotiated_price Float?
+  status           String        @default("PENDING")
+  code             String?
+  picked_up_at     DateTime?
+  on_way_at        DateTime?
+  at_gate_at       DateTime?
+  delivered_at     DateTime?
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+  rider            RiderProfile? @relation(fields: [rider_id], references: [id])
+  university       University    @relation(fields: [university_id], references: [id])
+  order            Order?        @relation(fields: [order_id], references: [id])
+
+  @@map("deliveries")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  type       String
+  payload    String?
+  read       Boolean  @default(false)
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id])
+
+  @@map("notifications")
+}
+
+model Banner {
+  id         String   @id @default(uuid())
+  title      String
+  subtitle   String?
+  cta_text   String?
+  image_url  String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("banners")
+}
+
+model PageControl {
+  id              String   @id @default(uuid())
+  page_name       String
+  section_name    String?
+  is_enabled      Boolean  @default(true)
+  maintenance_msg String?
+  updated_at      DateTime @updatedAt
+
+  @@unique([page_name, section_name])
+  @@map("page_controls")
+}
+
+model Complaint {
+  id          String   @id @default(uuid())
+  user_id     String
+  subject     String
+  description String
+  category    String
+  status      String   @default("PENDING")
+  response    String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  user        User     @relation(fields: [user_id], references: [id])
+
+  @@map("complaints")
+}
+
+model State {
+  id           String       @id @default(uuid())
+  name         String       @unique
+  created_at   DateTime     @default(now())
+  updated_at   DateTime     @updatedAt
+  universities University[]
+
+  @@map("states")
+}
