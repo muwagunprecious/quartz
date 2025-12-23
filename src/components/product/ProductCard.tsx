@@ -1,8 +1,8 @@
 "use client";
+// forcing refresh
 import React from 'react';
 import { Heart, Star, MapPin, MessageCircle } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import Badge from '../common/Badge';
 import { useWishlist } from '@/hooks/useWishlist';
 import { getImageUrl } from '@/lib/api';

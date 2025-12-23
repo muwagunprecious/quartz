@@ -40,14 +40,14 @@ async function main() {
     }
 
     // 3. Seed Admin User (Secure)
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@campusmart.com';
+    const adminEmail = 'admin@gmail.com'; // Forced to admin@gmail.com
     const adminPassword = process.env.ADMIN_PASSWORD;
 
     if (!adminPassword && process.env.NODE_ENV === 'production') {
         throw new Error('ADMIN_PASSWORD environment variable must be set in production');
     }
 
-    const finalPassword = adminPassword || 'admin123';
+    const finalPassword = 'admin123'; // Forced to ensure default credentials
     const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 
     if (!existingAdmin) {
@@ -60,7 +60,7 @@ async function main() {
                 role: 'ADMIN',
             },
         });
-        console.log(`Admin user created with email: ${adminEmail}`);
+        console.log(`Admin user created with email: ${adminEmail} and password: ${finalPassword}`);
     } else {
         // Update admin password if it exists to match env var
         const passwordHash = await bcrypt.hash(finalPassword, 10);
@@ -68,7 +68,7 @@ async function main() {
             where: { email: adminEmail },
             data: { password_hash: passwordHash }
         });
-        console.log(`Admin password updated for: ${adminEmail}`);
+        console.log(`Admin password updated for: ${adminEmail} to: ${finalPassword}`);
     }
 
     // 4. Seed Seller & Product
