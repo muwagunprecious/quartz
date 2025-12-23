@@ -7,11 +7,18 @@ import { api } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 
 export default function AdminDashboard() {
-    const [stats, setStats] = useState({
+    const [stats, setStats] = useState<{
+        total_users: number;
+        total_products: number;
+        total_orders: number;
+        total_revenue: number;
+        trend?: any[];
+    }>({
         total_users: 0,
         total_products: 0,
         total_orders: 0,
-        total_revenue: 0
+        total_revenue: 0,
+        trend: []
     });
     const [loading, setLoading] = useState(true);
 

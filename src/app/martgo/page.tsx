@@ -5,11 +5,12 @@ import DeliveryCard from '@/components/martgo/DeliveryCard';
 import { Truck, CheckCircle, Clock } from 'lucide-react';
 
 export default function MartGoPage() {
-    const { orders, updateOrderStatus, toggleRidersOnline, areRidersOnline } = useDelivery();
+    const { orders, updateStatus } = useDelivery();
 
-    const availableOrders = orders.filter(o => o.status === 'available');
-    const ongoingOrders = orders.filter(o => o.status === 'ongoing');
-    const completedOrders = orders.filter(o => o.status === 'completed');
+    const availableOrders = orders.filter(o => o.status === 'PENDING');
+    const ongoingOrders = orders.filter(o => ['ACCEPTED', 'PICKED_UP', 'ON_MY_WAY', 'AT_THE_GATE'].includes(o.status));
+    const completedOrders = orders.filter(o => o.status === 'DELIVERED');
+
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -25,15 +26,6 @@ export default function MartGoPage() {
                         <p className="text-textmuted text-sm">Rider Delivery Management System</p>
                     </div>
                 </div>
-
-                {/* Simulator Toggle */}
-                <button
-                    onClick={toggleRidersOnline}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold transition-all border ${areRidersOnline ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-600 border-red-200'}`}
-                >
-                    <div className={`w-2 h-2 rounded-full ${areRidersOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
-                    {areRidersOnline ? 'Riders Online' : 'Riders Offline (Sim)'}
-                </button>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
@@ -57,7 +49,7 @@ export default function MartGoPage() {
                             <DeliveryCard
                                 key={order.id}
                                 order={order}
-                                onAccept={() => updateOrderStatus(order.id, 'ongoing')}
+                                onAccept={() => updateStatus(order.id, 'ACCEPTED')}
                             />
                         ))}
                     </div>
@@ -82,7 +74,7 @@ export default function MartGoPage() {
                             <DeliveryCard
                                 key={order.id}
                                 order={order}
-                                onMarkDelivered={() => updateOrderStatus(order.id, 'completed')}
+                                onAccept={() => updateStatus(order.id, 'DELIVERED')}
                             />
                         ))}
                     </div>

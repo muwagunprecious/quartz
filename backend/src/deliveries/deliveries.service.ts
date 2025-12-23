@@ -53,6 +53,8 @@ export class DeliveriesService {
             include: { order: { include: { product: true } } }
         });
 
+        console.log(`[DELIVERY] New request created: ${delivery.id} in university: ${universityId}`);
+
         // Notify Riders in University
         this.gateway.notifyRiders(universityId, 'delivery_request', delivery);
 
@@ -95,6 +97,8 @@ export class DeliveriesService {
                     negotiated_price: null
                 }
             });
+
+            console.log(`[DELIVERY] Request ${deliveryId} accepted by rider: ${riderId}`);
 
             // Notify Buyer and Seller
             this.gateway.notifyUser(delivery.order.buyer_id, 'delivery_accepted', updated);
@@ -140,6 +144,7 @@ export class DeliveriesService {
                     delivered_at: new Date()
                 }
             });
+            console.log(`[DELIVERY] ${deliveryId} completed successfully`);
             // Notify all
             this.gateway.notifyUser(delivery.order.buyer_id, 'delivery_completed', updated);
             this.gateway.notifyUser(delivery.order.seller.user_id, 'delivery_completed', updated);
@@ -262,9 +267,11 @@ export class DeliveriesService {
             throw new BadRequestException('Cannot cancel delivered order');
         }
 
-        return this.prisma.delivery.update({
+        const updated = await this.prisma.delivery.update({
             where: { id: deliveryId },
             data: { status: DeliveryStatus.CANCELLED }
         });
+        console.log(`[DELIVERY] ${deliveryId} cancelled by user: ${userId}`);
+        return updated;
     }
 }

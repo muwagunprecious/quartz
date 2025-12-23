@@ -34,7 +34,7 @@ export class AdminService {
     async updatePageControl(page: string, section: string, is_enabled: boolean, msg?: string) {
         // Handle empty/null section names consistently
         const sectionName = section || '';
-        console.log(`[AdminService] updatePageControl: page=${page}, section='${sectionName}', is_enabled=${is_enabled}`);
+        console.log(`[ADMIN ACTION] Update Page Control: page=${page}, section='${sectionName}', is_enabled=${is_enabled}`);
 
         return this.prisma.pageControl.upsert({
             where: { page_name_section_name: { page_name: page, section_name: sectionName } },
@@ -54,10 +54,12 @@ export class AdminService {
     }
 
     async banUser(userId: string) {
+        console.log(`[ADMIN ACTION] Banning user: ${userId}`);
         return this.prisma.user.update({ where: { id: userId }, data: { is_banned: true, is_active: false } });
     }
 
     async unbanUser(userId: string) {
+        console.log(`[ADMIN ACTION] Unbanning user: ${userId}`);
         return this.prisma.user.update({ where: { id: userId }, data: { is_banned: false, is_active: true } });
     }
 
@@ -127,6 +129,7 @@ export class AdminService {
     }
 
     async deleteUniversity(id: string) {
+        console.log(`[ADMIN ACTION] Deleting university: ${id}`);
         return this.prisma.university.delete({ where: { id } });
     }
 
@@ -147,6 +150,7 @@ export class AdminService {
     }
 
     async deleteCategory(id: string) {
+        console.log(`[ADMIN ACTION] Deleting category: ${id}`);
         return this.prisma.category.delete({ where: { id } });
     }
 
