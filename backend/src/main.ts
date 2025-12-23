@@ -16,7 +16,7 @@ async function bootstrap() {
     // Security: Configure CORS
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
     app.enableCors({
-        origin: frontendUrl,
+        origin: [frontendUrl, 'http://localhost:3000', 'https://campusmart-frontend.onrender.com'],
         credentials: true,
     });
 
