@@ -18,7 +18,7 @@ export default function GlobalNotificationPopup() {
         const token = localStorage.getItem('token');
         if (!token) return;
 
-        const newSocket = io('http://127.0.0.1:5003', {
+        const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
             auth: { token }
         });
 

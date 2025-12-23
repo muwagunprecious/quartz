@@ -62,7 +62,7 @@ export const productService = {
     },
 
     async getCategories() {
-        const response = await api.get('/products/categories'); // Adjust endpoint if needed
+        const response = await api.get('/categories');
         return response.data;
     },
 

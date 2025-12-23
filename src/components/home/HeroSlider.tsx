@@ -77,7 +77,7 @@ export default function HeroSlider() {
     // Helper to get full image URL
     const getImageUrl = (url: string) => {
         if (url.startsWith('http')) return url;
-        return `http://127.0.0.1:5003${url}`;
+        return `${process.env.NEXT_PUBLIC_API_URL}${url}`;
     };
 
     return (

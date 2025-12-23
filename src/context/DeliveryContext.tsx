@@ -57,7 +57,7 @@ export function DeliveryProvider({ children }: { children: React.ReactNode }) {
     // 1. Initialize Socket
     useEffect(() => {
         if (token && user) {
-            const newSocket = io('http://127.0.0.1:5001', {
+            const newSocket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
 
 
                 auth: { token },

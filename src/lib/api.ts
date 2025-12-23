@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://127.0.0.1:5003/api', // Updated to match backend port
-
+    baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api`,
+    withCredentials: true, // Enable credentials for CORS
     headers: {
         'Content-Type': 'application/json',
     },
