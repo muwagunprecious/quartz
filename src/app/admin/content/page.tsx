@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Badge from '@/components/common/Badge';
-import { api } from '@/lib/api';
+import { api, getImageUrl } from '@/lib/api';
 import { toast } from 'react-hot-toast';
 import { Image as ImageIcon, Plus, Trash2, Power, Layout, Bell, Send } from 'lucide-react';
 
@@ -190,7 +190,7 @@ export default function AdminContent() {
                         banners.map((banner) => (
                             <div key={banner.id} className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm group">
                                 <div className="h-40 relative">
-                                    <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
+                                    <img src={getImageUrl(banner.image_url)} alt={banner.title} className="w-full h-full object-cover" />
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-4">
                                         <button
                                             onClick={() => handleToggleBanner(banner.id, banner.is_active)}

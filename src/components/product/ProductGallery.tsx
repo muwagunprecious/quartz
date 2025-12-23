@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from 'react';
+import { getImageUrl } from '@/lib/api';
 
 interface ProductGalleryProps {
     images: string[];
@@ -15,7 +16,7 @@ export default function ProductGallery({ images = [] }: ProductGalleryProps) {
             {/* Main Image */}
             <div className="w-full aspect-[4/5] md:aspect-square bg-gray-100 rounded-lg overflow-hidden relative">
                 <img
-                    src={displayImages[activeImage]}
+                    src={getImageUrl(displayImages[activeImage])}
                     alt="Product View"
                     className="w-full h-full object-cover"
                 />
@@ -34,7 +35,7 @@ export default function ProductGallery({ images = [] }: ProductGalleryProps) {
                             className={`flex-shrink-0 w-16 h-16 rounded-[6px] overflow-hidden border-2 transition-all ${activeImage === idx ? 'border-primary' : 'border-transparent hover:border-gray-200'
                                 }`}
                         >
-                            <img src={img} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
+                            <img src={getImageUrl(img)} alt={`Thumbnail ${idx}`} className="w-full h-full object-cover" />
                         </button>
                     ))}
                 </div>

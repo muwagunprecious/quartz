@@ -22,5 +22,11 @@ api.interceptors.request.use(
     }
 );
 
+export const getImageUrl = (url?: string) => {
+    if (!url) return '';
+    if (url.startsWith('http') || url.startsWith('blob:')) return url;
+    return `${process.env.NEXT_PUBLIC_API_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 export { api };
 export default api;

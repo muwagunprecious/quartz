@@ -7,6 +7,7 @@ import Badge from '@/components/common/Badge';
 import { MapPin, Navigation, Package, CheckCircle, Truck, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { riderService, RiderProfile } from '@/services/riderService';
+import { getImageUrl } from '@/lib/api';
 
 export default function DeliveryDashboard() {
     const { orders, acceptDelivery, activeDelivery, updateStatus } = useDelivery();
@@ -145,7 +146,7 @@ function DeliveryCard({ order, action, showStatusControls, onUpdateStatus }: { o
                 <div className="flex gap-4 min-w-[300px]">
                     <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                         {order.productImage ? (
-                            <img src={order.productImage} alt={order.productName} className="w-full h-full object-cover" />
+                            <img src={getImageUrl(order.productImage)} alt={order.productName} className="w-full h-full object-cover" />
                         ) : (
                             <div className="w-full h-full flex items-center justify-center text-gray-400">
                                 <Package size={24} />

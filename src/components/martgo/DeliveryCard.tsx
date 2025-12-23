@@ -3,6 +3,7 @@ import React from 'react';
 import { MapPin, CheckCircle, Package, Truck } from 'lucide-react';
 import Button from '../common/Button';
 import { DeliveryOrder } from '@/context/DeliveryContext';
+import { getImageUrl } from '@/lib/api';
 
 interface DeliveryCardProps {
     order: DeliveryOrder;
@@ -19,7 +20,7 @@ export default function DeliveryCard({ order, onAccept }: DeliveryCardProps) {
             {/* Header */}
             <div className="flex gap-4 p-5 border-b border-gray-100/50 bg-gray-50/30 backdrop-blur-sm">
                 <div className="w-16 h-16 bg-white rounded-xl overflow-hidden flex-shrink-0 shadow-sm border border-gray-100 relative">
-                    <img src={order.productImage || '/placeholder.png'} alt={order.productName || 'Product'} className="w-full h-full object-cover" />
+                    <img src={getImageUrl(order.productImage) || '/placeholder.png'} alt={order.productName || 'Product'} className="w-full h-full object-cover" />
                     {isDelivered && <div className="absolute inset-0 bg-green-900/20 flex items-center justify-center"><CheckCircle className="text-white" /></div>}
                 </div>
                 <div className="flex-grow">

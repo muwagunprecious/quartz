@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star, MessageCircle, ShieldCheck, Clock } from 'lucide-react';
 import Button from '../common/Button';
+import { getImageUrl } from '@/lib/api';
 
 interface SellerBannerProps {
     name: string;
@@ -15,8 +16,8 @@ interface SellerBannerProps {
 }
 
 export default function SellerBanner({ name = 'Seller', bio, rating = 0, productCount = 0, university, id, whatsappNumber, logoUrl, bannerUrl }: SellerBannerProps) {
-    const bannerImage = bannerUrl || "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&q=80&w=1200";
-    const logoImage = logoUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
+    const bannerImage = bannerUrl ? getImageUrl(bannerUrl) : "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?auto=format&fit=crop&q=80&w=1200";
+    const logoImage = logoUrl ? getImageUrl(logoUrl) : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`;
     return (
         <div className="bg-white border rounded-[12px] overflow-hidden mb-6 shadow-sm">
             {/* Cover Image */}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Badge from '../common/Badge';
 import { useWishlist } from '@/hooks/useWishlist';
+import { getImageUrl } from '@/lib/api';
 
 interface ProductCardProps {
     id: string;
@@ -29,7 +30,7 @@ export default function ProductCard({ id, title, price, oldPrice, image, locatio
             {/* Image Area */}
             <Link href={`/product/${id}`} className="relative h-[200px] w-full bg-gray-100 overflow-hidden block">
                 <img
-                    src={image}
+                    src={getImageUrl(image)}
                     alt={title}
                     className={`w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 ${isOutOfStock ? 'opacity-50 grayscale' : ''}`}
                 />

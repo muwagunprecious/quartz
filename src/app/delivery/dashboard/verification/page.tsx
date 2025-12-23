@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { riderService, RiderProfile } from '@/services/riderService';
+import { getImageUrl } from '@/lib/api';
 import Button from '@/components/common/Button';
 import Loader from '@/components/common/Loader';
 import { Upload, CheckCircle, AlertCircle, FileText, ArrowLeft } from 'lucide-react';
@@ -28,7 +29,7 @@ export default function RiderVerificationPage() {
             const data = await riderService.getProfile();
             setProfile(data);
             if (data.verification_document_url) {
-                setPreviewUrl(data.verification_document_url);
+                setPreviewUrl(getImageUrl(data.verification_document_url));
             }
             if (data.verification_document_type) {
                 setDocumentType(data.verification_document_type);

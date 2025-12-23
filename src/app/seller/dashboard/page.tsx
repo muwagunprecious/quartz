@@ -7,6 +7,7 @@ import Loader from '@/components/common/Loader';
 import { productService } from '@/services/productService';
 import { sellerService } from '@/services/sellerService';
 import { Plus, Package, TrendingUp, BarChart, Truck, Star } from 'lucide-react';
+import { getImageUrl } from '@/lib/api';
 
 export default function SellerDashboard() {
     const [stats, setStats] = React.useState({ totalProducts: 0, totalViews: 0, totalClicks: 0, clickThroughRate: "0", rating: 0 });
@@ -167,7 +168,7 @@ export default function SellerDashboard() {
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
                                                     <div className="w-10 h-10 bg-gray-100 rounded-md overflow-hidden">
-                                                        <img src={product.images?.[0]?.url || '/placeholder.png'} alt="" className="w-full h-full object-cover" />
+                                                        <img src={getImageUrl(product.images?.[0]?.url) || '/placeholder.png'} alt="" className="w-full h-full object-cover" />
                                                     </div>
                                                     <span className="font-medium text-sm text-gray-900 line-clamp-1">{product.title}</span>
                                                 </div>
